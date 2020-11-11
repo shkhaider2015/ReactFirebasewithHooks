@@ -1,30 +1,18 @@
 import React from 'react'
 import firebase from "../Config/firebase";
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 export const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => 
 {
-    const [currentUser, setCurrentUser] = React.useState(null);
-    const [pending, setPending] = React.useState(true);
+    // const [currentUser, setCurrentUser] = React.useState(null);
+    // const [pending, setPending] = React.useState(true);
+    const [user, loading, error] = useAuthState(firebase.auth());
 
-    React.useEffect(
-        ()=>
-        {
-            firebase
-            .auth()
-            .onAuthStateChanged(
-                (user) =>
-                {
-                    setCurrentUser(user)
-                    setPending(false)
-                }
-            )
-        },
-        []
-    )
+    
 
-    if(pending)
+    if(loading)
     {
         return(
             <>
@@ -33,10 +21,19 @@ export const AuthProvider = ({ children }) =>
         )
     }
 
+    if(error)
+    {
+        return(
+            <>
+                {error}
+            </>
+        )
+    }
+
     return(
         <AuthContext.Provider
         value={{
-            currentUser
+            currentUser : user
         }}
         >
             { children }

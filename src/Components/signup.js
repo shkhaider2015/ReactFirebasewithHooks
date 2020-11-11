@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import firebase from "../Config/firebase";
+import { AuthContext } from "../Context/authContext";
 
 const Signup = () => {
 
     const navigate = useNavigate();
+    const { currentUser } = React.useContext(AuthContext)
 
     const handleSubmit = React.useCallback(
         async e => {
@@ -18,7 +20,7 @@ const Signup = () => {
                 await  firebase
                     .auth()
                     .createUserWithEmailAndPassword(email.value, password.value)
-                navigate("/home")
+                // navigate("/home")
             }catch(error)
             {
                 alert(error)
@@ -27,12 +29,16 @@ const Signup = () => {
         [navigate]
     )
 
-    function vv()
-    {
-        console.log("VV called")
-    }
-
-    vv()
+    React.useEffect(
+        ()=>
+        {
+            if(currentUser)
+            {
+                navigate("/home")
+            }
+        },
+        [currentUser]
+    )
 
     return (
         <div>

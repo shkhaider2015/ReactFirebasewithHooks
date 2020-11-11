@@ -1,11 +1,31 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
+import firebase from "../Config/firebase"
 
-const login = () => {
+const Login = () => {
 
-    const handleSubmit = () => 
-    {
-        
-    }
+    const navigate = useNavigate();
+
+    const handleSubmit = React.useCallback(
+        async e => {
+            e.preventDefault();
+            const [email, password] = e.target.elements;
+
+            try
+            {
+                await firebase
+                .auth()
+                .signInWithEmailAndPassword(email.value, password.value)
+                navigate("/home");
+                
+            }catch(err)
+            {
+                alert(err)
+                console.error(err)
+            }
+        },
+        []
+    )
 
     return (
         <div>
@@ -26,4 +46,4 @@ const login = () => {
     );
 };
 
-export default login;
+export default Login;
